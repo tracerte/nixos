@@ -13,24 +13,6 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  # LUKS Devices
-  boot.initrd.luks.reusePassphrases = true;
-
-  boot.initrd.luks.devices = {
-    "cryptroot" = {
-      device = "/dev/disk/by-label/cryptroot";
-      allowDiscards = true;
-      };
-    "cryptswap" = {
-      device = "/dev/disk/by-label/cryptswap";
-      allowDiscards = true;
-    };
-    "cryptdata" = {
-      device = "/dev/disk/by-label/cryptdata";
-      allowDiscards = true;
-    };
-  };
-
   fileSystems."/" =
     { device = "zroot/ROOT/nixos";
       fsType = "zfs";
@@ -62,7 +44,6 @@
     };
 
   # Swap
-  boot.resumeDevice = "/dev/mapper/cryptswap";
   swapDevices = [ { device = "/dev/mapper/cryptswap"; } ];
   
   nix.maxJobs = lib.mkDefault 8;

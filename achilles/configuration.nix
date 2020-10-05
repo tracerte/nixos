@@ -11,26 +11,12 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ../modules/luks.nix
       ../modules/zfs.nix
       ../modules/laptop.nix
     ];
 
-  # Use the grub EFI boot loader because it supports LUKS.
-  boot.loader = {
-
-    efi = {
-            canTouchEfiVariables = true;
-            efiSysMountPoint = "/boot";
-	  };
-    grub = {
-             enable = true;
-             version = 2;
-             copyKernels = true;
-             efiSupport = true;
-	           device = "nodev"; 		
-           };
-  };
-
+  setup.luks.enable = true; 
   setup.zfs = {
     enable = true;
     hostId = "78ac4fde"; 
@@ -42,6 +28,7 @@ in
     enable = true;
     gpu = "nvidia";
     wirelessNetworks = secrets.wifi.home;
+    resumeDevice = "/dev/mapper/cryptswap";
   };
 
   networking.hostName = "achilles"; # Define your hostname.
@@ -53,46 +40,6 @@ in
   networking.interfaces.enp0s31f6.useDHCP = true;
   networking.interfaces.wlp4s0.useDHCP = true;
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Select internationalisation properties.
-   i18n.defaultLocale = "en_US.UTF-8";
-   console = {
-     font = "Lat2-Terminus16";
-     keyMap = "us";
-   };
-
-  # Set your time zone.
-  time.timeZone = "America/New_York";
-  
-  nixpkgs.config.allowUnfree = true;
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [ neovim ];
-  
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-   programs.gnupg.agent = {
-     enable = true;
-   };
-
-   programs.zsh.enable = true;
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users = {
     groups = {
       tracerte = { gid = 1000; };
@@ -115,17 +62,6 @@ in
     };
   };
   
-  # Nix Store Maintenance
-  nix.autoOptimiseStore = true;
-  # Use gc.automatic to keep disk space under control.
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
-    };
-  # Clean /tmp automatically on boot.
-  boot.cleanTmpDir = true;
-
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave

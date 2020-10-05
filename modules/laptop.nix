@@ -13,8 +13,48 @@ in
     gpu = mkOption {
       type = types.str;
       description = "Check the X11 drivers available for config.services.xserver.videoDrivers";};
+    resumeDevice = mkOption {
+      type = types.str;
+      example = "/dev/sda2";
     };
+  };
+    
   config = mkIf cfg.enable {
+     boot.resumeDevice = cfg.resumeDevice;
+     
+     # Select internationalisation properties.
+     i18n.defaultLocale = "en_US.UTF-8";
+     console = {
+      font = "Lat2-Terminus16";
+       keyMap = "us";
+     };
+
+     # Set your time zone.
+     time.timeZone = "America/New_York";
+
+     # Allow unfree packages
+     nixpkgs.config.allowUnfree = true;
+
+     # List packages installed in system profile. To search, run:
+     # $ nix search wget
+     environment.systemPackages = with pkgs; [ neovim wpa_supplicant_gui ];
+
+     programs.gnupg.agent = {
+       enable = true;
+     };
+     programs.zsh.enable = true;
+
+    # Nix Store Maintenance
+    nix.autoOptimiseStore = true;
+    # Use gc.automatic to keep disk space under control.
+    nix.gc = {
+     automatic = true;
+     dates = "weekly";
+     options = "--delete-older-than 30d";
+     };
+    # Clean /tmp automatically on boot.
+    boot.cleanTmpDir = true;
+
     # Power
     services.tlp = {
       enable = true;
@@ -24,7 +64,6 @@ in
       };
      };
      services.upower.enable = true;
-     environment.systemPackages = [ pkgs.wpa_supplicant_gui ]; 
      networking.wireless = {
        enable = true;
        # Configuration for wpa_gui

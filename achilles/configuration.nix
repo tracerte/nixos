@@ -3,23 +3,23 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, ... }:
-
 let
   secrets = import ../secrets.nix;
 in
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
+      # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../modules/luks.nix
       ../modules/zfs.nix
       ../modules/laptop.nix
     ];
 
-  setup.luks.enable = true; 
+  setup.luks.enable = true;
   setup.zfs = {
     enable = true;
-    hostId = "78ac4fde"; 
+    hostId = "78ac4fde";
     importSafeguard = false;
     zfsRoot = true;
   };
@@ -32,13 +32,15 @@ in
   };
 
   networking.hostName = "achilles"; # Define your hostname.
-  
+
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
   networking.interfaces.enp0s31f6.useDHCP = true;
   networking.interfaces.wlp4s0.useDHCP = true;
+
+  services.openssh.enable = true;
 
   users = {
     groups = {
@@ -61,7 +63,7 @@ in
       };
     };
   };
-  
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
@@ -71,4 +73,3 @@ in
   system.stateVersion = "20.03"; # Did you read the comment?
 
 }
-

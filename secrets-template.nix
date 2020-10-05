@@ -6,7 +6,7 @@
   };
   wifi = {
     home = {
-      "MyNet".pskRaw="";
+      "MyNet".pskRaw = "";
     };
   };
 }

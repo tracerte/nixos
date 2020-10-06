@@ -11,25 +11,45 @@ in
     [
       # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ../modules/luks.nix
-      ../modules/zfs.nix
-      ../modules/laptop.nix
+      ../modules/setup/luks.nix
+      ../modules/setup/zfs.nix
+      ../modules/setup/printer-scanner.nix
+      ../modules/setup/wifi.nix
+      ../modules/setup/nix-store.nix
+      ../modules/setup/desktop.nix
+      ../modules/setup/power-scaling.nix
     ];
 
-  setup.luks.enable = true;
+  setup.luks = {
+    enable = true;
+    hibernation = true;
+  };
   setup.zfs = {
     enable = true;
     hostId = "78ac4fde";
-    importSafeguard = false;
+    importSafeguard = true;
     zfsRoot = true;
   };
 
-  setup.laptop = {
+  setup.printerScanner = {
+    enable = true;
+    gui = true;
+  };
+
+  setup.wifi = {
+    enable = true;
+    gui = true;
+    wirelessNetworks = secrets.wifi.home;
+  };
+
+  setup.nixStore.enable = true;
+
+  setup.desktop = {
     enable = true;
     gpu = "nvidia";
-    wirelessNetworks = secrets.wifi.home;
-    resumeDevice = "/dev/mapper/cryptswap";
   };
+
+  setup.powerScaling.enable = true;
 
   networking.hostName = "achilles"; # Define your hostname.
 
@@ -41,6 +61,33 @@ in
   networking.interfaces.wlp4s0.useDHCP = true;
 
   services.openssh.enable = true;
+
+  # Select internationalisation properties.
+  i18n.defaultLocale = "en_US.UTF-8";
+  console = {
+    font = "ter-powerline-v20b";
+    packages = [ pkgs.powerline-fonts ];
+    keyMap = "us";
+  };
+
+  # Set your time zone.
+  time.timeZone = "America/New_York";
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [ neovim nixpkgs-fmt ];
+
+  programs.gnupg.agent = {
+    enable = true;
+  };
+  programs.zsh.enable = true;
+
+  # Clean /tmp automatically on boot.
+  boot.cleanTmpDir = true;
+
 
   users = {
     groups = {
@@ -56,7 +103,7 @@ in
         description = "Matthew B. Reisch";
         uid = 1000;
         group = "tracerte";
-        extraGroups = [ "wheel" ]; # Enable ‘sudo’
+        extraGroups = [ "wheel" "scanner" "lp" ]; # Enable ‘sudo’
         # Create password with $ mkpasswd -m sha-512
         hashedPassword = secrets.tracerte.hashedPassword;
         openssh.authorizedKeys.keys = secrets.tracerte.sshKeys;

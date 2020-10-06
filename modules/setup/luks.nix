@@ -6,6 +6,10 @@ in
 {
   options.setup.luks = {
     enable = mkEnableOption "luks setup";
+    hibernation = mkOption {
+      type = types.bool;
+      default = false;
+    };
   };
 
   config = mkIf cfg.enable {
@@ -40,5 +44,6 @@ in
         allowDiscards = true;
       };
     };
+    boot.resumeDevice = mkIf cfg.hibernation "/dev/mapper/cryptswap";
   };
 }

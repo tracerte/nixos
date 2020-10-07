@@ -78,7 +78,7 @@ in
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [ neovim nixpkgs-fmt ];
+  environment.systemPackages = with pkgs; [ vim nixpkgs-fmt ];
 
   programs.gnupg.agent = {
     enable = true;

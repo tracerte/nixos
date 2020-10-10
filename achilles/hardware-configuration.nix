@@ -49,6 +49,12 @@
       device = "zdata/BACKUP/backup";
       fsType = "zfs";
     };
+    
+  fileSystems."/onedrive/tracerte" =
+    {
+      device = "zdata/ONEDRIVE/tracerte";
+      fsType = "zfs";
+    };
 
   # Swap
   swapDevices = [{ device = "/dev/mapper/cryptswap"; }];

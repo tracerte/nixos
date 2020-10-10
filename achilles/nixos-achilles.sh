@@ -132,6 +132,14 @@ zfs set com.sun:auto-snapshot=true zdata/BACKUP/backup
 mkdir /mnt/backup
 mount -t zfs zdata/BACKUP/backup /mnt/backup
 
+
+zfs create -o mountpoint=none -o canmount=off zdata/ONEDRIVE
+zfs create -o mountpoint=legacy -o canmount=on zdata/ONEDRIVE/tracerte
+zfs set com.sun:auto-snapshot=true zdata/ONEDRIVE/tracerte
+mkdir -p /mnt/onedrive/tracerte
+mount -t zfs zdata/ONEDRIVE/tracerte /mnt/onedrive/tracerte
+
+
 # Create configuration directory
 mkdir -p /mnt/etc/nixos
 echo "Everything setup. Please move/symlink your configuration.nix to /mnt/etc/nixos"

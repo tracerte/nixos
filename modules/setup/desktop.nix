@@ -22,7 +22,17 @@ in
       videoDrivers = [ cfg.gpu ];
       # Enable touchpad support.
       libinput.enable = true;
-      displayManager.startx.enable = true;
+      displayManager = {
+        lightdm.enable = true;
+        defaultSession = "xsession";
+        session = [
+          {
+            manage = "desktop";
+            name = "xsession";
+            start = "exec $HOME/.xsession";
+          }
+        ];
+      };
     };
 
   };

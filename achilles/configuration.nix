@@ -103,7 +103,7 @@ in
         description = "Matthew B. Reisch";
         uid = 1000;
         group = "tracerte";
-        extraGroups = [ "wheel" "scanner" "lp" ]; # Enable ‘sudo’
+        extraGroups = [ "wheel" "scanner" "lp" "sound" "audio" "video" ]; # Enable ‘sudo’
         # Create password with $ mkpasswd -m sha-512
         hashedPassword = secrets.tracerte.hashedPassword;
         openssh.authorizedKeys.keys = secrets.tracerte.sshKeys;

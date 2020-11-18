@@ -15,7 +15,7 @@ in
       ../modules/setup/zfs.nix
       ../modules/setup/printer-scanner.nix
       ../modules/setup/wifi.nix
-      ../modules/setup/nix-store.nix
+      ../modules/setup/nix-opts.nix
       ../modules/setup/desktop.nix
       ../modules/setup/power-scaling.nix
     ];
@@ -42,7 +42,7 @@ in
     wirelessNetworks = secrets.wifi.home;
   };
 
-  setup.nixStore.enable = true;
+  setup.nixOpts.enable = true;
 
   setup.desktop = {
     enable = true;
